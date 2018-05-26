@@ -34,6 +34,8 @@ exports.up = function(knex, Promise) {
       table.increments('id')
       table.string('user_id').unsigned();
       table.string('user_img').unsigned();
+      table.string('email').unsigned();
+      table.string('password').unsigned();
       table.string('bio').unsigned();
       table.string('rating').unsigned();
     })]
