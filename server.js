@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get('/api/', (request, response) => {
-  return res.status(200).json('text');
+  return response.status(200).json('text');
 });
 
 app.get('/api/locations', (request, response) => {
@@ -18,14 +18,14 @@ app.get('/api/locations', (request, response) => {
   });
 })
 
-app.get('/api/venues', (request, response) => {
-  return database('locations').where({
-    user_id: null
-  }).select()
-  .then(locations => {
-    return response.status(200).json({locations});
-  });
-})
+// app.get('/api/venues', (request, response) => {
+//   return database('locations').where({
+//     user_id: null
+//   }).select()
+//   .then(locations => {
+//     return response.status(200).json({locations});
+//   });
+// })
 
 app.get('/api/users', (request, response) => {
   return database('users').select()
@@ -41,11 +41,10 @@ app.get('/api/rides', (request, response) => {
   });
 })
 
-app.post('/api/locations/new', (request, response) => {
-  console.log(request.body);
-  return database('locations').insert(request.body)
-  .then(() => {
-    return response.status(201).json({status: 'success'})
+app.get('/api/pickup', (request, response) => {
+  return database('pickup').select()
+  .then(pickup => {
+    return response.status(200).json({pickup});
   });
 })
 
@@ -56,10 +55,17 @@ app.post('/api/locations/new', (request, response) => {
     return response.status(201).json({status: 'success'})
   });
 })
+
+// app.post('/api/locations/new', (request, response) => {
+//   console.log(request.body);
+//   return database('locations').insert(request.body)
+//   .then(() => {
+//     return response.status(201).json({status: 'success'})
+//   });
+// })
 
 app.post('/api/rides/new', (request, response) => {
   console.log(request.body);
-  //locations returns a key that will be associated with this post method
   return database('rides').insert(request.body)
   .then(() => {
     return response.status(201).json({status: 'success'})
@@ -69,6 +75,14 @@ app.post('/api/rides/new', (request, response) => {
 app.post('/api/users/new', (request, response) => {
   console.log(request.body);
   return database('users').insert(request.body)
+  .then(() => {
+    return response.status(201).json({status: 'success'})
+  });
+})
+
+app.post('/api/pickup/new', (request, response) => {
+  console.log(request.body);
+  return database('pickup').insert(request.body)
   .then(() => {
     return response.status(201).json({status: 'success'})
   });
