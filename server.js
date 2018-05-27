@@ -4,6 +4,13 @@ const bodyParser = require('body-parser');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
+
+app.use(function(request, response, next) {
+  response.header("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Methods", "*");
+  response.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -18,14 +25,29 @@ app.get('/api/locations', (request, response) => {
   });
 })
 
-// app.get('/api/venues', (request, response) => {
-//   return database('locations').where({
-//     user_id: null
-//   }).select()
-//   .then(locations => {
-//     return response.status(200).json({locations});
-//   });
-// })
+app.get('/api/locations/:id', (request, response) => {
+  const id = request.params.id
+  return database('locations').where({
+    location_name: id
+  }).select()
+  .then(locations => {
+    return response.status(200).json({locations});
+  });
+})
+
+app.post('/api/users', (request, response) => {
+  return database('users').where({
+    email: request.body.email,
+    password: request.body.password
+  }).select()
+  .then(user => {
+    return response.status(200).json({
+      status: 'Success',
+      user,
+      message: 'Retrieved one user'
+    });
+  });
+})
 
 app.get('/api/users', (request, response) => {
   return database('users').select()
@@ -41,6 +63,16 @@ app.get('/api/rides', (request, response) => {
   });
 })
 
+// app.post('/api/rides/:id', (request, response) => {
+//   const id = request.params.id
+//   return database('rides').where({
+//     location_id: id
+//   }).select()
+//   .then(rides => {
+//     return response.status(200).json({rides});
+//   });
+// })
+
 app.get('/api/pickup', (request, response) => {
   return database('pickup').select()
   .then(pickup => {
@@ -55,14 +87,6 @@ app.post('/api/locations/new', (request, response) => {
     return response.status(201).json({status: 'success'})
   });
 })
-
-// app.post('/api/locations/new', (request, response) => {
-//   console.log(request.body);
-//   return database('locations').insert(request.body)
-//   .then(() => {
-//     return response.status(201).json({status: 'success'})
-//   });
-// })
 
 app.post('/api/rides/new', (request, response) => {
   console.log(request.body);
