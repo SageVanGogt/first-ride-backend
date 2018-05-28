@@ -4,7 +4,8 @@ exports.up = function(knex, Promise) {
     knex.schema.createTable('locations', function(table) {
       table.increments('id')
       table.string('location_name');
-      table.string('location_lat_lng');
+      table.string('lat');
+      table.string('lng');
     }),
     knex.schema.createTable('rides', function(table) {
       table.increments('id')
@@ -14,11 +15,11 @@ exports.up = function(knex, Promise) {
       table.integer('driver_id').unsigned()
       table.foreign('driver_id')
       .references('users.id');
-      table.string('car_capacity').unsigned();
-      table.string('seats_remaining').unsigned();
-      table.string('car_type').unsigned();
-      table.string('date').unsigned();
-      table.string('time').unsigned();
+      table.string('car_capacity');
+      table.string('seats_remaining');
+      table.string('car_type');
+      table.string('date');
+      table.string('time');
     }),
     knex.schema.createTable('pickup', function(table) {
       table.increments('id')
@@ -28,16 +29,24 @@ exports.up = function(knex, Promise) {
       table.integer('location_id').unsigned();
       table.foreign('location_id')
       .references('locations.id');
-      table.string('pickup_lat_lng').unsigned();
+      table.string('lat');
+      table.string('lng');
     }),
     knex.schema.createTable('users', function(table) {
       table.increments('id')
-      table.string('user_id').unsigned();
-      table.string('user_img').unsigned();
-      table.string('email').unsigned();
-      table.string('password').unsigned();
-      table.string('bio').unsigned();
-      table.string('rating').unsigned();
+      table.string('user_name');
+      table.string('email');
+      table.string('password');
+    }),
+    knex.schema.createTable('profiles', function(table) {
+      table.increments('id')
+      table.integer('profile_id').unsigned();
+      table.foreign('profile_id')
+      .references('users.id');
+      table.string('bio');
+      table.string('rating');
+      table.string('user_img');
+      table.string('reviews');
     })]
   )
 };

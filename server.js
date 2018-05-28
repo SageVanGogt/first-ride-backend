@@ -63,15 +63,37 @@ app.get('/api/rides', (request, response) => {
   });
 })
 
-// app.post('/api/rides/:id', (request, response) => {
-//   const id = request.params.id
-//   return database('rides').where({
-//     location_id: id
-//   }).select()
-//   .then(rides => {
-//     return response.status(200).json({rides});
-//   });
-// })
+app.post('/api/rides/get/:id', (request, response) => {
+  const id = request.params.id
+  return database('rides').where({
+    location_id: id
+  }).select()
+  .then(rides => {
+    return response.status(200)
+    .json({
+      rides
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
+
+app.post('/api/pickup/get/:id', (request, response) => {
+  const id = request.params.id
+  return database('pickup').where({
+    location_id: id
+  }).select()
+  .then(pickup => {
+    return response.status(200)
+    .json({
+      pickup
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
 
 app.get('/api/pickup', (request, response) => {
   return database('pickup').select()
@@ -81,7 +103,6 @@ app.get('/api/pickup', (request, response) => {
 })
 
 app.post('/api/locations/new', (request, response) => {
-  console.log(request.body);
   return database('locations').insert(request.body)
   .then(() => {
     return response.status(201).json({status: 'success'})
@@ -89,7 +110,6 @@ app.post('/api/locations/new', (request, response) => {
 })
 
 app.post('/api/rides/new', (request, response) => {
-  console.log(request.body);
   return database('rides').insert(request.body)
   .then(() => {
     return response.status(201).json({status: 'success'})
@@ -105,7 +125,6 @@ app.post('/api/users/new', (request, response) => {
 })
 
 app.post('/api/pickup/new', (request, response) => {
-  console.log(request.body);
   return database('pickup').insert(request.body)
   .then(() => {
     return response.status(201).json({status: 'success'})
