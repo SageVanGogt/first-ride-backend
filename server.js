@@ -110,24 +110,35 @@ app.post('/api/locations/new', (request, response) => {
 })
 
 app.post('/api/rides/new', (request, response) => {
-  return database('rides').insert(request.body)
-  .then(() => {
-    return response.status(201).json({status: 'success'})
+  return database('rides')
+  .returning('id')
+  .insert(request.body)
+  .then(rideId => {
+    return response.status(200).json({
+      status: 'success',
+      message: "ride added to db",
+      id: rideId[0]
+    })
   });
 })
 
 app.post('/api/users/new', (request, response) => {
-  console.log(request.body);
   return database('users').insert(request.body)
-  .then(() => {
-    return response.status(201).json({status: 'success'})
+  .then((user) => {
+    return response.status(201).json({
+      status: 'success'
+    })
   });
 })
 
 app.post('/api/pickup/new', (request, response) => {
   return database('pickup').insert(request.body)
-  .then(() => {
-    return response.status(201).json({status: 'success'})
+  .returning('id')
+  .then((pickup) => {
+    return response.status(201).json({
+      status: 'success',
+      id: pickup[0]
+    })
   });
 })
 
