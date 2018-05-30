@@ -21,6 +21,15 @@ exports.up = function(knex, Promise) {
       table.string('date');
       table.string('time');
     }),
+    knex.schema.createTable('rides_passengers', function(table) {
+      table.increments('id')
+      table.integer('ride_id').unsigned()
+      table.foreign('ride_id')
+      .references('rides.id');
+      table.integer('passenger_id').unsigned()
+      table.foreign('passenger_id')
+      .references('users.id');
+    }),
     knex.schema.createTable('pickup', function(table) {
       table.increments('id')
       table.integer('ride_id').unsigned();
@@ -56,6 +65,7 @@ exports.down = function(knex, Promise) {
     knex.schema.dropTable('locations'),
     knex.schema.dropTable('rides'),
     knex.schema.dropTable('users'),
-    knex.schema.dropTable('pickup')
+    knex.schema.dropTable('pickup'),
+    knex.schema.dropTable('profiles')
   ]);
 };

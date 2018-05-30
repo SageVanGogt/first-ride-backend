@@ -49,6 +49,13 @@ app.post('/api/users', (request, response) => {
   });
 })
 
+app.get('/api/rides_passengers/', (request, response) => {
+  return database('rides_passengers').select()
+  .then(data => {
+    return response.status(200).json({data});
+  });
+})
+
 app.get('/api/users', (request, response) => {
   return database('users').select()
   .then(users => {
@@ -78,6 +85,56 @@ app.post('/api/rides/get/:id', (request, response) => {
     response.status(500).json({error: err.detail});
   })
 })
+
+app.post('/api/rides_passengers/get/passengers/:id', (request, response) => {
+  const id = request.params.id
+  return database('rides_passengers').where({
+    ride_id: id
+  }).select()
+  .then(ride => {
+    return response.status(200)
+    .json({
+      ride
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
+
+app.post('/api/users/get/:id', (request, response) => {
+  const id = request.params.id
+  return database('users').where({
+    ride_along_id: id
+  }).select()
+  .then(users => {
+    return response.status(200)
+    .json({
+      users
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
+
+// app.patch('/api/users/:id', (request, response) => {
+//   const id = request.params.id
+//   console.log(request)
+//   return database('users').where({
+//     id: id
+//   }).select()
+//   .insert(request.body)
+//   .then(users => {
+//     return response.status(200)
+//     .json({
+//       users
+//     });
+//   })
+//   .catch(err => {
+//     response.status(500).json({error: err.detail});
+//   })
+// })
 
 app.post('/api/pickup/get/:id', (request, response) => {
   const id = request.params.id
@@ -118,6 +175,17 @@ app.post('/api/rides/new', (request, response) => {
       status: 'success',
       message: "ride added to db",
       id: rideId[0]
+    })
+  });
+})
+
+app.post('/api/rides_passengers/new', (request, response) => {
+  return database('rides_passengers')
+  .insert(request.body)
+  .then(() => {
+    return response.status(200).json({
+      status: 'success',
+      message: "ride/passenger added to db"
     })
   });
 })
