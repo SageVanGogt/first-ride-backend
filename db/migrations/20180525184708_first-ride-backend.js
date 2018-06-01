@@ -29,6 +29,9 @@ exports.up = function(knex, Promise) {
       table.integer('passenger_id').unsigned()
       table.foreign('passenger_id')
       .references('users.id');
+      table.integer('location_id').unsigned()
+      table.foreign('location_id')
+      .references('locations.id');
     }),
     knex.schema.createTable('pickup', function(table) {
       table.increments('id')

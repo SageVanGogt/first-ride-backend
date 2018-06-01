@@ -89,7 +89,7 @@ app.post('/api/rides/get/:id', (request, response) => {
 app.post('/api/rides_passengers/get/passengers/:id', (request, response) => {
   const id = request.params.id
   return database('rides_passengers').where({
-    ride_id: id
+    location_id: id
   }).select()
   .then(ride => {
     return response.status(200)
@@ -152,6 +152,22 @@ app.post('/api/pickup/get/:id', (request, response) => {
   })
 })
 
+app.post('/api/profiles/get/:id', (request, response) => {
+  const id = request.params.id
+  return database('profiles').where({
+    profile_id: id
+  }).select()
+  .then(profile => {
+    return response.status(200)
+    .json({
+      profile
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
+
 app.get('/api/pickup', (request, response) => {
   return database('pickup').select()
   .then(pickup => {
@@ -187,12 +203,23 @@ app.post('/api/rides_passengers/new', (request, response) => {
       status: 'success',
       message: "ride/passenger added to db"
     })
-  });
+  })
 })
 
 app.post('/api/users/new', (request, response) => {
   return database('users').insert(request.body)
+  .returning('id')
   .then((user) => {
+    return response.status(201).json({
+      status: 'success',
+      id: user[0]
+    })
+  });
+})
+
+app.post('/api/profiles/new', (request, response) => {
+  return database('profiles').insert(request.body)
+  .then((profile) => {
     return response.status(201).json({
       status: 'success'
     })
@@ -206,6 +233,20 @@ app.post('/api/pickup/new', (request, response) => {
     return response.status(201).json({
       status: 'success',
       id: pickup[0]
+    })
+  });
+})
+
+app.delete('/api/rides/:id/passengers/:user_id', (request, response) => {
+  var passenger = request.params.user_id;
+  var ride = request.params.id;
+  return database('rides_passengers').where({
+    ride_id: ride,
+    passenger_id: passenger
+  }).del()
+  .then(() => {
+    return response.status(201).json({
+      status: 'success'
     })
   });
 })
