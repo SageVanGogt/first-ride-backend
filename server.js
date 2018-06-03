@@ -86,6 +86,22 @@ app.post('/api/rides/get/:id', (request, response) => {
   })
 })
 
+app.post('/api/rides/:id/get/user/', (request, response) => {
+  const rideId = request.params.id
+  return database('rides').where({
+    id: rideId
+  }).select()
+  .then(rides => {
+    return response.status(200)
+    .json({
+      rides
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
+
 app.post('/api/rides_passengers/get/passengers/:id', (request, response) => {
   const id = request.params.id
   return database('rides_passengers').where({
@@ -95,6 +111,22 @@ app.post('/api/rides_passengers/get/passengers/:id', (request, response) => {
     return response.status(200)
     .json({
       ride
+    });
+  })
+  .catch(err => {
+    response.status(500).json({error: err.detail});
+  })
+})
+
+app.post('/api/rides_passengers/get/rides/:id', (request, response) => {
+  const id = request.params.id
+  return database('rides_passengers').where({
+    passenger_id: id
+  }).select()
+  .then(rides => {
+    return response.status(200)
+    .json({
+      rides
     });
   })
   .catch(err => {
@@ -237,9 +269,10 @@ app.post('/api/pickup/new', (request, response) => {
   });
 })
 
-app.delete('/api/rides/:id/passengers/:user_id', (request, response) => {
+app.delete('/api/rides/:id/passengers/:user_id/destination/:loc_id', (request, response) => {
   var passenger = request.params.user_id;
   var ride = request.params.id;
+  var location = request.params.loc_id;
   return database('rides_passengers').where({
     ride_id: ride,
     passenger_id: passenger

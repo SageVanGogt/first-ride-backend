@@ -43,6 +43,7 @@ exports.up = function(knex, Promise) {
       .references('locations.id');
       table.string('lat');
       table.string('lng');
+      table.bool('isShowing');
     }),
     knex.schema.createTable('users', function(table) {
       table.increments('id')
