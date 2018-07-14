@@ -289,7 +289,9 @@ app.delete('/api/rides/:id/passengers/:user_id/destination/:loc_id', (request, r
   });
 })
 
-app.listen(3000, () => {
+app.listen(app.get('port'), () => {
   console.log('Express intro running on localhost: 3000');
 });
+
+module.exports = app;
 
