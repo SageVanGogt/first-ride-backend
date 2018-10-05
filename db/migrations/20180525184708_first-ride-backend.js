@@ -44,6 +44,7 @@ exports.up = function(knex, Promise) {
       table.string('lat');
       table.string('lng');
       table.bool('isShowing');
+      table.string('address');
     }),
     knex.schema.createTable('users', function(table) {
       table.increments('id')

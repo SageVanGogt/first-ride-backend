@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const environment = process.env.NODE_ENV || 'development';
 const configuration = require('./knexfile')[environment];
 const database = require('knex')(configuration);
+app.set('port', process.env.PORT || 3000);
 
 app.use(function(request, response, next) {
   response.header("Access-Control-Allow-Origin", "*");
@@ -216,24 +217,27 @@ app.post('/api/locations/new', (request, response) => {
 
 app.post('/api/rides/new', (request, response) => {
   return database('rides')
-  .returning('id')
+  .returning('*')
   .insert(request.body)
-  .then(rideId => {
+  .then(ride => {
     return response.status(200).json({
       status: 'success',
       message: "ride added to db",
-      id: rideId[0]
+      id: ride[0].id,
+      ride: ride[0]
     })
   });
 })
 
 app.post('/api/rides_passengers/new', (request, response) => {
   return database('rides_passengers')
+  .returning('*')
   .insert(request.body)
-  .then(() => {
+  .then((ride) => {
     return response.status(200).json({
       status: 'success',
-      message: "ride/passenger added to db"
+      message: "ride/passenger added to db",
+      ride: ride[0]
     })
   })
 })
@@ -260,11 +264,11 @@ app.post('/api/profiles/new', (request, response) => {
 
 app.post('/api/pickup/new', (request, response) => {
   return database('pickup').insert(request.body)
-  .returning('id')
+  .returning('*')
   .then((pickup) => {
     return response.status(201).json({
       status: 'success',
-      id: pickup[0]
+      pickup: pickup[0]
     })
   });
 })
@@ -277,14 +281,18 @@ app.delete('/api/rides/:id/passengers/:user_id/destination/:loc_id', (request, r
     ride_id: ride,
     passenger_id: passenger
   }).del()
-  .then(() => {
+  .returning('id')
+  .then((id) => {
     return response.status(201).json({
-      status: 'success'
+      status: 'success',
+      id
     })
   });
 })
 
-app.listen(3000, () => {
+app.listen(process.env.PORT || 3000, () => {
   console.log('Express intro running on localhost: 3000');
 });
+
+module.exports = app;
 
