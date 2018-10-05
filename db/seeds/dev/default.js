@@ -1,6 +1,6 @@
 
 exports.seed = function(knex, Promise) {
-  return knex('table_name').del()
+  return knex('locations').del()
     .then(function () {
       return Promise.all([
         knex('locations').insert({
